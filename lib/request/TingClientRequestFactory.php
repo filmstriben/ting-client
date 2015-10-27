@@ -1,9 +1,9 @@
 <?php
 
 class TingClientRequestFactory {
-	public function __construct($urls) {
-		$this->urls = $urls;
-	}
+  public function __construct($urls) {
+    $this->urls = $urls;
+  }
 
   /**
    * Get certain webservice url.
@@ -22,93 +22,53 @@ class TingClientRequestFactory {
     return $url;
   }
 
-	/**
-	 * @return TingClientSearchRequest
-	 */
-	public function getSearchRequest() {
-		if (empty($this->urls['search'])) {
-			return FALSE;
-		}
-		return new TingClientSearchRequest($this->urls['search']);
-	}
+  /**
+   * @return TingClientSearchRequest
+   */
+  public function getSearchRequest() {
+    return new TingClientSearchRequest($this->urls['search']);
+  }
 
-	/**
-	 * @return TingClientScanRequest
-	 */
-	public function getScanRequest() {
-		if (empty($this->urls['scan'])) {
-			return FALSE;
-		}
-		return new TingClientScanRequest($this->urls['scan']);
-	}
+  /**
+   * @return TingClientCollectionRequest
+   */
+  public function getCollectionRequest() {
+    return new TingClientCollectionRequest($this->urls['collection']);
+  }
 
-	/**
-	 * @return TingClientCollectionRequest
-	 */
-	public function getCollectionRequest() {
-		if (empty($this->urls['collection'])) {
-			return FALSE;
-		}
-		return new TingClientCollectionRequest($this->urls['collection']);
-	}
+  /**
+   * @return TingClientObjectRequest
+   */
+  public function getObjectRequest() {
+    return new TingClientObjectRequest($this->urls['object']);
+  }
 
-	/**
-	 * @return TingClientObjectRequest
-	 */
-	public function getObjectRequest() {
-		if (empty($this->urls['object'])) {
-			return FALSE;
-		}
-		return new TingClientObjectRequest($this->urls['object']);
-	}
+  /**
+   * @return TingClientObjectRecommendationRequest
+   */
+  function getObjectRecommendationRequest() {
+    return new TingClientObjectRecommendationRequest($this->urls['recommendation']);
+  }
 
-	/**
-	 * @return TingClientSpellRequest
-	 */
-	public function getSpellRequest() {
-		if (empty($this->urls['spell'])) {
-			return FALSE;
-		}
-		return new TingClientSpellRequest($this->urls['spell']);
-	}
+  /**
+   * @ return TingClientInfomediaArticleRequest
+   */
+  function getInfomediaArticleRequest(){
+    return new TingClientInfomediaArticleRequest($this->urls['infomedia']);
+  }
 
-	/**
-	 * @return TingClientObjectRecommendationRequest
-	 */
-	function getObjectRecommendationRequest() {
-		if (empty($this->urls['recommendation'])) {
-			return FALSE;
-		}
-		return new TingClientObjectRecommendationRequest($this->urls['recommendation']);
-	}
+  /**
+   * @return TingClientInfomediaReviewRequest
+   */
+  function getInfomediaReviewRequest(){
+    return new TingClientInfomediaReviewRequest($this->urls['infomedia']);
+  }
 
-	/**
-	 * @ return TingClientInfomediaArticleRequest
-	 */
-	function getInfomediaArticleRequest(){
-		if (empty($this->urls['infomedia'])) {
-			return FALSE;
-		}
-		return new TingClientInfomediaArticleRequest($this->urls['infomedia']);
-	}
+  /**
+   * @return TingFulltextRequest
+   */
+  function getFulltextRequest() {
+    return new TingFulltextRequest($this->urls['object']);
+  }
 
-	/**
-	 * @return TingClientInfomediaReviewRequest
-	 */
-	function getInfomediaReviewRequest(){
-		if (empty($this->urls['infomedia'])) {
-			return FALSE;
-		}
-		return new TingClientInfomediaReviewRequest($this->urls['infomedia']);
-	}
-
-	/**
-	 * @return TingFulltextRequest
-	 */
-	function getFulltextRequest() {
-		if (empty($this->urls['object'])) {
-			return FALSE;
-		}
-		return new TingFulltextRequest($this->urls['object']);
-	}
 }
