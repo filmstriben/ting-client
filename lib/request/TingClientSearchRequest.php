@@ -192,7 +192,7 @@ class TingClientSearchRequest extends TingClientRequest {
   public function setProfile($profile) {
     $this->profile = $profile;
   }
-  
+
   public function getCollectionType() {
     return $this->collectionType;
   }
@@ -240,6 +240,7 @@ class TingClientSearchRequest extends TingClientRequest {
   private function generateObject($objectData, $namespaces) {
     $object = new TingClientObject();
     $object->id = self::getValue($objectData->identifier);
+    $object->creationDate = self::getValue($objectData->creationDate);
 
     $object->record = array();
     $object->relations = array();
