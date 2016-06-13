@@ -15,6 +15,7 @@ class TingClientSearchRequest extends TingClientRequest {
     'dcterms' => 'http://purl.org/dc/terms/',
     'ac' => 'http://biblstandard.dk/ac/namespace/',
     'dkdcplus' => 'http://biblstandard.dk/abm/namespace/dkdcplus/',
+    'marcx' => 'info:lc/xmlns/marcxchange-v1',
   );
 
   // Query parameter is required, so if not provided, we will just do a
@@ -22,7 +23,7 @@ class TingClientSearchRequest extends TingClientRequest {
   protected $query = '*:*';
   protected $facets = array();
   protected $numFacets;
-  protected $format;
+  protected $objectFormat;
   protected $start;
   protected $numResults;
   protected $rank;
@@ -41,13 +42,13 @@ class TingClientSearchRequest extends TingClientRequest {
 
     // These defaults are always needed.
     $this->setParameter('action', 'searchRequest');
-    if (!isset($parameters['format']) || empty($parameters['format'])) {
-      $this->setParameter('format', 'dkabm');
+    if (!isset($parameters['objectFormat']) || empty($parameters['objectFormat'])) {
+      $this->setParameter('objectFormat', 'dkabm');
     }
 
     $methodParameterMap = array(
       'query' => 'query',
-      'format' => 'format',
+      'objectFormat' => 'objectFormat',
       'start' => 'start',
       'numResults' => 'stepValue',
       'rank' => 'rank',
@@ -113,12 +114,12 @@ class TingClientSearchRequest extends TingClientRequest {
     $this->numFacets = $numFacets;
   }
 
-  public function getFormat() {
-    return $this->format;
+  public function getObjectFormat() {
+    return $this->objectFormat;
   }
 
-  public function setFormat($format) {
-    $this->format = $format;
+  public function setObjectFormat($format) {
+    $this->objectFormat = $format;
   }
 
   public function getStart() {
@@ -282,6 +283,55 @@ class TingClientSearchRequest extends TingClientRequest {
             $object->record[$key1][$key2] = array();
           }
           $object->record[$key1][$key2][] = $element->{'$'};
+        }
+      }
+    }
+    elseif ($this->objectFormat == 'marcxchange' && isset($objectData->collection->record)) {
+      $records = $objectData->collection->record;
+      if (!is_array($records)) {
+        $records = array($records);
+      }
+
+      foreach ($records as $k => $record) {
+        foreach ($record as $name => $element) {
+          if ($name == '@') {
+            continue;
+          }
+          if (strpos($name, '@') !== FALSE) {
+            $key = str_replace('@', '', $name);
+          }
+          else {
+            $key = $name;
+          }
+
+          if (is_array($element)) {
+            if ($name == 'datafield') {
+              $currentField = FALSE;
+              foreach ($element as $key2 => $dataField) {
+                if ($currentField != $dataField->{'@tag'}->{'$'}) {
+                  $i = 0;
+                }
+                $currentField = $dataField->{'@tag'}->{'$'};
+                $subFields = $dataField->subfield;
+                if (!is_array($subFields)) {
+                  $subFields = array($subFields);
+                }
+
+                foreach ($subFields as $subField) {
+                  if (isset($subField->{'$'})) {
+                    $object->record[$k][$key][$dataField->{'@tag'}->{'$'}][$i][$subField->{'@code'}->{'$'}] = $subField->{'$'};
+                  }
+                }
+
+                $i++;
+              }
+            }
+          }
+          else {
+            if (isset($element->{'$'})) {
+              $object->record[$k][$key] = $element->{'$'};
+            }
+          }
         }
       }
     }
