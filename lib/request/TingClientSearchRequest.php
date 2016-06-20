@@ -317,8 +317,13 @@ class TingClientSearchRequest extends TingClientRequest {
                   $subFields = array($subFields);
                 }
 
+
                 foreach ($subFields as $subField) {
                   if (isset($subField->{'$'})) {
+                    if (isset($object->record[$k][$key][$dataField->{'@tag'}->{'$'}][$i][$subField->{'@code'}->{'$'}])) {
+                      $i++;
+                    }
+
                     $object->record[$k][$key][$dataField->{'@tag'}->{'$'}][$i][$subField->{'@code'}->{'$'}] = $subField->{'$'};
                   }
                 }
