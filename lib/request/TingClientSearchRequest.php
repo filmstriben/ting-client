@@ -33,6 +33,8 @@ class TingClientSearchRequest extends TingClientRequest {
   protected $relationData;
   protected $agency;
   protected $profile;
+  protected $queryPrefix;
+  protected $repository;
   protected $collectionType;
   var $userDefinedBoost;
   var $userDefinedRanking;
@@ -58,6 +60,7 @@ class TingClientSearchRequest extends TingClientRequest {
       'relationData' => 'relationData',
       'agency' => 'agency',
       'profile' => 'profile',
+      'repository' => 'repository',
     );
 
     foreach ($methodParameterMap as $method => $parameter) {
@@ -85,6 +88,16 @@ class TingClientSearchRequest extends TingClientRequest {
     // Include userDefinedRanking if set on the request.
     if (is_array($this->userDefinedRanking) && !empty($this->userDefinedRanking)) {
       $this->setParameter('userDefinedRanking', $this->userDefinedRanking);
+    }
+
+    // Include userDefinedRanking if set on the request.
+    if (is_array($this->userDefinedRanking) && !empty($this->userDefinedRanking)) {
+      $this->setParameter('userDefinedRanking', $this->userDefinedRanking);
+    }
+
+    // Include queryPrefix if set on request.
+    if (!empty($this->getQueryPrefix())) {
+      $this->setParameter('query', "{$this->getQueryPrefix()}={$this->getQuery()}");
     }
 
     return $this;
@@ -192,6 +205,22 @@ class TingClientSearchRequest extends TingClientRequest {
 
   public function setProfile($profile) {
     $this->profile = $profile;
+  }
+
+  public function getQueryPrefix() {
+    return $this->queryPrefix;
+  }
+
+  public function setQueryPrefix($queryPrefix) {
+    $this->queryPrefix = $queryPrefix;
+  }
+
+  public function getRepository() {
+    return $this->repository;
+  }
+
+  public function setRepository($repository) {
+    $this->repository = $repository;
   }
 
   public function getCollectionType() {
